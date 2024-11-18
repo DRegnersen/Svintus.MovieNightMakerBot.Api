@@ -1,6 +1,6 @@
 ﻿using Svintus.MovieNightMakerBot.Api.Endpoints;
 using Svintus.MovieNightMakerBot.Api.Endpoints.Abstractions;
-using Svintus.MovieNightMakerBot.Core.DependencyInjection;
+using Svintus.MovieNightMakerBot.Core.DependencyInjection.Extensions;
 using Telegram.Bot.Types;
 
 namespace Svintus.MovieNightMakerBot.Api.Extensions;
