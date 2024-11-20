@@ -3,12 +3,22 @@ using Telegram.Bot.Types;
 
 namespace Svintus.MovieNightMakerBot.Core.Commands.Abstractions;
 
-public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributor, ComplexCommandBase<TContext>? next = null)
-    : CommandBase, IUpdateListener where TContext : new()
+public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributor) : CommandBase, IUpdateListener
+    where TContext : new()
 {
+    private readonly Dictionary<long, int> _currentSteps = new();
+    private readonly Dictionary<long, TContext> _contexts = new();
+    
     public override async Task ExecuteAsync(Update update)
     {
-        await ExecuteAndConveyAsync(update);
+        var chatId = update.Message!.Chat.Id;
+        
+        _currentSteps[chatId] = 1;
+        _contexts[chatId] = new TContext();
+        
+        distributor.RegisterListener(chatId, this);
+
+        await ExecuteAndContinueAsync(update);
     }
 
     public async Task HandleUpdateAsync(Update update)
@@ -16,29 +26,37 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
         if (update.Message?.Text is null)
             return;
         
-        await ExecuteAndConveyAsync(update);
+        await ExecuteAndContinueAsync(update);
     }
 
-    protected TContext Context { get; set; } = new();
+    protected IReadOnlyDictionary<long, int> CurrentStep => _currentSteps.AsReadOnly();
 
-    protected abstract Task ExecuteCoreAsync(Update update);
+    protected IReadOnlyDictionary<long, TContext> Context => _contexts.AsReadOnly();
 
-    private async Task ExecuteAndConveyAsync(Update update)
+    protected abstract Task<CommandStatus> ExecuteCoreAsync(Update update);
+
+    private async Task ExecuteAndContinueAsync(Update update)
     {
-        await ExecuteCoreAsync(update);
-
+        var status = await ExecuteCoreAsync(update);
         var chatId = update.Message!.Chat.Id;
-
-        if (next is not null)
+        
+        if (status == CommandStatus.Continue)
         {
-            distributor.RegisterListener(chatId, distributeTo: next);
-            next.Context = Context;
+            _currentSteps[chatId]++;
+            return;
         }
-        else
-        {
-            distributor.UnregisterListener(chatId);
+        
+        if (status == CommandStatus.Stop){
+            distributor.UnregisterListener(update.Message!.Chat.Id);
+            return;
         }
 
-        Context = new TContext();
+        throw new ArgumentOutOfRangeException(nameof(status));
     }
+}
+
+public enum CommandStatus
+{
+    Continue,
+    Stop
 }
