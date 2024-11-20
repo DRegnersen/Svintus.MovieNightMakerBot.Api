@@ -8,50 +8,46 @@ using Telegram.Bot.Types;
 namespace Svintus.MovieNightMakerBot.Application.Commands;
 
 [CommandName("/rate")]
-internal sealed class FirstRateCommand(ITelegramBotClient client, IUpdateDistributor distributor, ComplexCommandBase<RatingContext> next) 
-    : ComplexCommandBase<RatingContext>(distributor, next)
+internal sealed class RateCommand(ITelegramBotClient client, IUpdateDistributor distributor) : ComplexCommandBase<RateContext>(distributor)
 {
-    protected override async Task ExecuteCoreAsync(Update update)
+    protected override async Task<CommandStatus> ExecuteCoreAsync(Update update)
     {
         var chatId = update.Message!.Chat.Id;
         
-        Context.CurrentFilm = FilmSelector.Random();
-        await client.SendMessage(chatId, $"How do you rate '{Context.CurrentFilm}'?");
-    }
-}
-
-internal sealed class SecondRateCommand(ITelegramBotClient client, IUpdateDistributor distributor, ComplexCommandBase<RatingContext> next) 
-    : ComplexCommandBase<RatingContext>(distributor, next)
-{
-    protected override async Task ExecuteCoreAsync(Update update)
-    {
-        var rate = Convert.ToInt32(update.Message!.Text);
-
-        if (rate > Context.BestRate)
+        if (CurrentStep[chatId] == 1)
         {
-            Context.BestRate = rate;
-            Context.BestFilm = Context.CurrentFilm;
+            Context[chatId].CurrentFilm = FilmSelector.Random();
+            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentFilm}'?");
+            
+            return CommandStatus.Continue;
         }
-        
-        var chatId = update.Message!.Chat.Id;
-        
-        Context.CurrentFilm = FilmSelector.Random();
-        await client.SendMessage(chatId, $"How do you rate '{Context.CurrentFilm}'?");
-    }
-}
 
-internal sealed class LastRateCommand(ITelegramBotClient client, IUpdateDistributor distributor) 
-    : ComplexCommandBase<RatingContext>(distributor)
-{
-    protected override async Task ExecuteCoreAsync(Update update)
-    {
-        var rate = Convert.ToInt32(update.Message!.Text);
-        if (rate > Context.BestRate)
+        if (CurrentStep[chatId] == 2)
         {
-            Context.BestFilm = Context.CurrentFilm;
+            var rate = Convert.ToInt32(update.Message!.Text);
+            if (rate >= Context[chatId].BestRate)
+            {
+                Context[chatId].BestRate = rate;
+                Context[chatId].BestFilm = Context[chatId].CurrentFilm;
+            }
+            
+            Context[chatId].CurrentFilm = FilmSelector.Random();
+            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentFilm}'?");
+            
+            return CommandStatus.Continue;
         }
-        
-        var chatId = update.Message!.Chat.Id;
-        await client.SendMessage(chatId, $"Best rated film is '{Context.BestFilm}'");
+
+        if (CurrentStep[chatId] == 3)
+        {
+            var rate = Convert.ToInt32(update.Message!.Text);
+            if (rate >= Context[chatId].BestRate)
+            {
+                Context[chatId].BestFilm = Context[chatId].CurrentFilm;
+            }
+            
+            await client.SendMessage(chatId, $"Best rated film is '{Context[chatId].BestFilm}'");
+        }
+
+        return CommandStatus.Stop;
     }
 }

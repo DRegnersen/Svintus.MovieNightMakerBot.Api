@@ -2,28 +2,20 @@
 using Microsoft.Extensions.DependencyInjection;
 using Svintus.MovieNightMakerBot.Core.CommandMediation;
 using Svintus.MovieNightMakerBot.Core.CommandMediation.Abstractions;
-using Svintus.MovieNightMakerBot.Core.DependencyInjection.Abstractions;
 using Svintus.MovieNightMakerBot.Core.UpdateDistribution;
 using Svintus.MovieNightMakerBot.Core.UpdateDistribution.Abstractions;
 using Telegram.Bot;
 
-namespace Svintus.MovieNightMakerBot.Core.DependencyInjection.Extensions;
+namespace Svintus.MovieNightMakerBot.Core.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    /// <typeparam name="TContext">The type of the complex command context</typeparam>
-    public static IComplexCommandBuilder<TContext> AddComplexCommand<TContext>(this IServiceCollection services) where TContext : new()
-    {
-        return new ComplexCommandBuilder<TContext>(services);
-    }
-
     public static IServiceCollection AddBotCore(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddBotClient(configuration);
 
-        services
-            .AddSingleton<IUpdateDistributor, UpdateDistributor>()
-            .AddSingleton<ICommandMediator, CommandMediator>();
+        services.AddSingleton<IUpdateDistributor, UpdateDistributor>();
+        services.AddSingleton<ICommandMediator, CommandMediator>();
 
         return services;
     }
