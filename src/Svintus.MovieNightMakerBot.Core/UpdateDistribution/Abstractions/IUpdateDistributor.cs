@@ -1,12 +1,12 @@
-﻿using Telegram.Bot.Types;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Svintus.MovieNightMakerBot.Core.UpdateDistribution.Abstractions;
 
 public interface IUpdateDistributor
 {
-    void DistributeTo(IUpdateListener listener, long chatId);
+    void RegisterListener(long chatId, IUpdateListener distributeTo);
 
-    void DistributeToDefault(long chatId);
+    void UnregisterListener(long chatId);
     
-    Task HandleUpdateAsync(Update update);
+    bool TryGetListener(long chatId, [NotNullWhen(true)] out IUpdateListener? listener); 
 }

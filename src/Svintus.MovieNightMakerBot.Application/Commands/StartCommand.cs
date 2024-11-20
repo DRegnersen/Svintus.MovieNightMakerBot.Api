@@ -11,6 +11,6 @@ internal sealed class StartCommand(ITelegramBotClient client) : CommandBase
     public override async Task ExecuteAsync(Update update)
     {
         var chatId = update.Message!.Chat.Id;
-        await client.SendMessage(chatId, "Welcome to Svintus.MovieNightMakerBot.");
+        await client.SendMessage(chatId, "Welcome to Svintus.MovieNightMakerBot");
     }
 }
