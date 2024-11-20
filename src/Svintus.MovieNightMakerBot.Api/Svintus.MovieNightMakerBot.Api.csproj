@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Svintus.MovieNightMakerBot.Core\Svintus.MovieNightMakerBot.Core.csproj" />
+      <ProjectReference Include="..\Svintus.MovieNightMakerBot.Application\Svintus.MovieNightMakerBot.Application.csproj" />
     </ItemGroup>
 
 </Project>
