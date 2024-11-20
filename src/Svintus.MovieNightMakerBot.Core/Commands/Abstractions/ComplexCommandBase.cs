@@ -53,10 +53,10 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
 
         throw new ArgumentOutOfRangeException(nameof(status));
     }
-}
-
-public enum CommandStatus
-{
-    Continue,
-    Stop
+    
+    protected enum CommandStatus
+    {
+        Continue,
+        Stop
+    }
 }
