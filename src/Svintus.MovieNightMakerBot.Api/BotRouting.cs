@@ -6,21 +6,19 @@ namespace Svintus.MovieNightMakerBot.Api;
 
 internal static class BotRouting
 {
-    private const string EmptyRoute = "/";
-
     public static void Endpoints(IEndpointRouteBuilder builder)
     {
         var routeBuilder = builder
-            .MapGroup(EmptyRoute)
+            .MapGroup("/api")
             .WithTags("MovieNightMakerBot")
             .WithOpenApi();
 
         routeBuilder
-            .MapGet(EmptyRoute, () => "Telegram bot is running")
+            .MapGet("/status", () => "Telegram bot is running")
             .WithName("Get");
         
         routeBuilder
-            .MapPost(EmptyRoute, (
+            .MapPost("/update", (
                     [FromBody] Update update,
                     [FromServices] BotEndpoint endpoint,
                     CancellationToken cancellationToken)

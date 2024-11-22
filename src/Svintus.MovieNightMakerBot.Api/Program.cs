@@ -16,6 +16,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseBotSetup();
 app.UseRouting();
 app.UseEndpoints(BotRouting.Endpoints);
 app.Run();

@@ -6,6 +6,7 @@ using Telegram.Bot.Types;
 namespace Svintus.MovieNightMakerBot.Application.Commands;
 
 [CommandName("/start")]
+[CommandDescription("About this bot")]
 internal sealed class StartCommand(ITelegramBotClient client) : CommandBase
 {
     public override async Task ExecuteAsync(Update update)

@@ -3,6 +3,6 @@
 internal sealed class RateContext
 {
     public int BestRate { get; set; }
-    public string? BestFilm { get; set; }
-    public string? CurrentFilm { get; set; }
+    public string? BestMovie { get; set; }
+    public string? CurrentMovie { get; set; }
 }

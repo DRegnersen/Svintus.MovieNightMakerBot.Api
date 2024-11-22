@@ -8,44 +8,45 @@ using Telegram.Bot.Types;
 namespace Svintus.MovieNightMakerBot.Application.Commands;
 
 [CommandName("/rate")]
+[CommandDescription("Rate some movies")]
 internal sealed class RateCommand(ITelegramBotClient client, IUpdateDistributor distributor) : ComplexCommandBase<RateContext>(distributor)
 {
     protected override async Task<CommandStatus> ExecuteCoreAsync(Update update)
     {
         var chatId = update.Message!.Chat.Id;
         
-        if (CurrentStep[chatId] == 1)
+        if (Step[chatId].IsInitial())
         {
-            Context[chatId].CurrentFilm = FilmSelector.Random();
-            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentFilm}'?");
+            Context[chatId].CurrentMovie = MovieSelector.Random();
+            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentMovie}'?");
             
             return CommandStatus.Continue;
         }
 
-        if (CurrentStep[chatId] == 2)
+        if (Step[chatId].IsAt(2))
         {
             var rate = Convert.ToInt32(update.Message!.Text);
             if (rate >= Context[chatId].BestRate)
             {
                 Context[chatId].BestRate = rate;
-                Context[chatId].BestFilm = Context[chatId].CurrentFilm;
+                Context[chatId].BestMovie = Context[chatId].CurrentMovie;
             }
             
-            Context[chatId].CurrentFilm = FilmSelector.Random();
-            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentFilm}'?");
+            Context[chatId].CurrentMovie = MovieSelector.Random();
+            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentMovie}'?");
             
             return CommandStatus.Continue;
         }
 
-        if (CurrentStep[chatId] == 3)
+        if (Step[chatId].IsAt(3))
         {
             var rate = Convert.ToInt32(update.Message!.Text);
             if (rate >= Context[chatId].BestRate)
             {
-                Context[chatId].BestFilm = Context[chatId].CurrentFilm;
+                Context[chatId].BestMovie = Context[chatId].CurrentMovie;
             }
             
-            await client.SendMessage(chatId, $"Best rated film is '{Context[chatId].BestFilm}'");
+            await client.SendMessage(chatId, $"Best rated movie is '{Context[chatId].BestMovie}'");
         }
 
         return CommandStatus.Stop;

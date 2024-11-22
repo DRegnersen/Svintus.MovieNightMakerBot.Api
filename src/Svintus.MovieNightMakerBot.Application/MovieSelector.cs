@@ -1,8 +1,8 @@
 ﻿namespace Svintus.MovieNightMakerBot.Application;
 
-internal static class FilmSelector
+internal static class MovieSelector
 {
-    private static readonly List<string> Films =
+    private static readonly List<string> Movies =
     [
         "The Shawshank Redemption",
         "The Godfather",
@@ -20,7 +20,7 @@ internal static class FilmSelector
 
     public static string Random()
     {
-        var index = RandomGenerator.Next(Films.Count);
-        return Films[index];
+        var index = RandomGenerator.Next(Movies.Count);
+        return Movies[index];
     }
 }

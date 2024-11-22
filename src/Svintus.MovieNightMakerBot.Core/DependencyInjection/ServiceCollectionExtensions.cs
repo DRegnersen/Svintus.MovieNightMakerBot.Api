@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Svintus.MovieNightMakerBot.Core.BotSetup;
+using Svintus.MovieNightMakerBot.Core.BotSetup.Abstractions;
+using Svintus.MovieNightMakerBot.Core.BotSetup.Models;
 using Svintus.MovieNightMakerBot.Core.CommandMediation;
 using Svintus.MovieNightMakerBot.Core.CommandMediation.Abstractions;
 using Svintus.MovieNightMakerBot.Core.UpdateDistribution;
@@ -14,6 +17,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddBotClient(configuration);
 
+        services.AddSingleton<IBotSetupService, BotSetupService>();
+        
         services.AddSingleton<IUpdateDistributor, UpdateDistributor>();
         services.AddSingleton<ICommandMediator, CommandMediator>();
 
@@ -24,8 +29,10 @@ public static class ServiceCollectionExtensions
     {
         var botOptions = configuration.GetSection("Services:TelegramBotClient").Get<TelegramBotClientOptions>()!;
 
-        services.AddSingleton<ITelegramBotClient, TelegramBotClient>(_ => new TelegramBotClient(botOptions));
-
+        services
+            .AddSingleton<ITelegramBotClient, TelegramBotClient>(_ => new TelegramBotClient(botOptions))
+            .Configure<BotSetupOptions>(configuration.GetSection("Services:TelegramBotClient"));
+        
         return services;
     }
 }
