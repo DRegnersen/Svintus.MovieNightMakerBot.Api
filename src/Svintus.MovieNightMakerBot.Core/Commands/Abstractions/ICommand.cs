@@ -4,7 +4,9 @@ namespace Svintus.MovieNightMakerBot.Core.Commands.Abstractions;
 
 public interface ICommand
 {
-    string? Name { get; }
+    string? CommandName { get; }
+    
+    string? CommandDescription { get; }
     
     Task ExecuteAsync(Update update);
 }

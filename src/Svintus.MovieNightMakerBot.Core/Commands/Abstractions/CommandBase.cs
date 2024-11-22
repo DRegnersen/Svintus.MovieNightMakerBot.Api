@@ -4,7 +4,9 @@ namespace Svintus.MovieNightMakerBot.Core.Commands.Abstractions;
 
 public abstract class CommandBase : ICommand
 {
-    public string? Name => GetCommandName();
+    public string? CommandName => GetCommandName();
+
+    public string? CommandDescription => GetCommandDescription();
 
     public abstract Task ExecuteAsync(Update update);
 
@@ -15,6 +17,16 @@ public abstract class CommandBase : ICommand
             typeof(CommandNameAttribute)
         );
 
-        return attribute?.Name;
+        return attribute?.CommandName;
+    }
+    
+    private string? GetCommandDescription()
+    {
+        var attribute = (CommandDescriptionAttribute?)Attribute.GetCustomAttribute(
+            GetType(),
+            typeof(CommandDescriptionAttribute)
+        );
+
+        return attribute?.CommandDescription;
     }
 }

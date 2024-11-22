@@ -22,7 +22,7 @@ internal sealed class CommandMediator(IEnumerable<ICommand> commands, IUpdateDis
         if (update.Message.Text is null)
             return;
         
-        var command = commands.FirstOrDefault(c => c.Name == update.Message.Text);
+        var command = commands.FirstOrDefault(c => c.CommandName == update.Message.Text);
         if (command is not null)
         {
             await command.ExecuteAsync(update);
