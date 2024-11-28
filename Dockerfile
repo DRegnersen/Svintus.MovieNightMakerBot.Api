@@ -8,8 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src
-COPY ["Svintus.MovieNightMakerBot.Api/Svintus.MovieNightMakerBot.Api.csproj", "Svintus.MovieNightMakerBot.Api/"]
-COPY ["Svintus.MovieNightMakerBot.Core/Svintus.MovieNightMakerBot.Core.csproj", "Svintus.MovieNightMakerBot.Core/"]
+COPY ["src/Svintus.MovieNightMakerBot.Api/Svintus.MovieNightMakerBot.Api.csproj", "Svintus.MovieNightMakerBot.Api/"]
+COPY ["src/Svintus.MovieNightMakerBot.Core/Svintus.MovieNightMakerBot.Core.csproj", "Svintus.MovieNightMakerBot.Core/"]
 RUN dotnet restore "Svintus.MovieNightMakerBot.Api/Svintus.MovieNightMakerBot.Api.csproj"
 
 COPY . .
