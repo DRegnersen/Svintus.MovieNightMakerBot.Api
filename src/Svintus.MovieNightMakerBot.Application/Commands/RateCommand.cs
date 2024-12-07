@@ -25,7 +25,7 @@ internal sealed class RateCommand(ITelegramBotClient client, IUpdateDistributor 
         if (Step[chatId].IsInitial())
         {
             var movies = await movieService.GetRandomMoviesAsync(ct);
-            Context[chatId].Rates = movies.Select(m => new MovieRate { MovieId = m.Id }).ToArray();   
+            Context[chatId].Rates = movies.Select(m => new MovieRate { MovieId = m.Id, MovieTitle = m.Title}).ToArray();   
         }
         else
         {
@@ -40,13 +40,15 @@ internal sealed class RateCommand(ITelegramBotClient client, IUpdateDistributor 
         
         if (Step[chatId] < Context[chatId].Rates.Length)
         {
-            await client.SendMessage(chatId, $"How do you rate *{Context[chatId].Rates[Step[chatId]]}*?", cancellationToken: ct);
+            await client.SendMessage(chatId, $"How do you rate {Context[chatId].Rates[Step[chatId]].MovieTitle}?", cancellationToken: ct);
             
             return CommandStatus.Continue;
         }
 
         var finalRates = Context[chatId].Rates.Select(r => new MovieRateModel(r.MovieId, r.Rate)).ToArray();
         await movieService.RateMoviesAsync(chatId, finalRates, ct);
+        
+        await client.SendMessage(chatId, "Thank you, your rates have been taken on board", cancellationToken: ct);
         
         return CommandStatus.Stop;
     }

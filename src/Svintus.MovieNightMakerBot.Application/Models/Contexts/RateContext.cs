@@ -8,5 +8,6 @@ internal sealed class RateContext
 internal sealed class MovieRate
 {
     public long MovieId { get; set; }
+    public string MovieTitle { get; set; } = default!;
     public int Rate { get; set; }
 }

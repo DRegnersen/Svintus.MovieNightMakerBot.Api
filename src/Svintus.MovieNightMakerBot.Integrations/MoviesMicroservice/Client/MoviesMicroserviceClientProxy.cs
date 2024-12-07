@@ -17,7 +17,7 @@ internal class MoviesMicroserviceClientProxy(IMoviesMicroserviceClient client, I
             return await client.GetRandomMoviesAsync(moviesNumber, cancellationToken);
         }
         
-        return await client.GetRandomMoviesAsync(moviesNumber, cancellationToken);
+        return await clientMock.GetRandomMoviesAsync(moviesNumber, cancellationToken);
     }
 
     public async Task RateMoviesAsync(long chatId, MovieRateModel[] rates, CancellationToken cancellationToken = default)
@@ -38,6 +38,6 @@ internal class MoviesMicroserviceClientProxy(IMoviesMicroserviceClient client, I
             return await client.GetRecommendedMoviesAsync(chatId, moviesNumber, cancellationToken);
         }
         
-        return await client.GetRecommendedMoviesAsync(chatId, moviesNumber, cancellationToken);
+        return await clientMock.GetRecommendedMoviesAsync(chatId, moviesNumber, cancellationToken);
     }
 }

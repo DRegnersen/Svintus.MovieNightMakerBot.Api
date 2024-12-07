@@ -19,9 +19,9 @@ public static class ServiceCollectionExtensions
         });
 
         services
-            .AddScoped<MoviesMicroserviceClient>()
-            .AddScoped<MoviesMicroserviceClientMock>()
-            .AddScoped<IMoviesMicroserviceClient>(sp => new MoviesMicroserviceClientProxy(
+            .AddSingleton<MoviesMicroserviceClient>()
+            .AddSingleton<MoviesMicroserviceClientMock>()
+            .AddSingleton<IMoviesMicroserviceClient>(sp => new MoviesMicroserviceClientProxy(
                 sp.GetRequiredService<MoviesMicroserviceClient>(),
                 sp.GetRequiredService<MoviesMicroserviceClientMock>(),
                 sp.GetRequiredService<IFeatureManager>()

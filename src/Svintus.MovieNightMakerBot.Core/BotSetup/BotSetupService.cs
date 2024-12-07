@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Svintus.MovieNightMakerBot.Core.BotSetup.Abstractions;
-using Svintus.MovieNightMakerBot.Core.BotSetup.Models;
+using Svintus.MovieNightMakerBot.Core.BotSetup.Models.Options;
 using Svintus.MovieNightMakerBot.Core.Commands.Abstractions;
 using Telegram.Bot;
 using Telegram.Bot.Types;

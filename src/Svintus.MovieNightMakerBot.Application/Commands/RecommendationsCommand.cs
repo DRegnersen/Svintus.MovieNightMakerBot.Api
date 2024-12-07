@@ -25,7 +25,7 @@ internal sealed class RecommendationsCommand(ITelegramBotClient client, IMovieSe
         var message = new StringBuilder();
         foreach (var movie in moviesResult.Value)
         {
-            message.AppendLine($"- *{movie.Title}*");
+            message.AppendLine($"– {movie.Title}");
         }
         
         await client.SendMessage(chatId, message.ToString(), cancellationToken: ct);
