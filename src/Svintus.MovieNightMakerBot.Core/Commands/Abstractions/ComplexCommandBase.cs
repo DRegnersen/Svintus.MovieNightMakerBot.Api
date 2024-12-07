@@ -12,7 +12,7 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
     private readonly Dictionary<long, CommandStep> _steps = new();
     private readonly Dictionary<long, TContext> _contexts = new();
 
-    public override async Task ExecuteAsync(Update update)
+    public override async Task ExecuteAsync(Update update, CancellationToken cancellationToken)
     {
         var chatId = update.Message!.Chat.Id;
 
@@ -21,22 +21,22 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
 
         distributor.RegisterListener(chatId, distributeTo: this);
 
-        await ExecuteAndContinueAsync(update);
+        await ExecuteAndContinueAsync(update, cancellationToken);
     }
 
-    public async Task HandleUpdateAsync(Update update)
+    public async Task HandleUpdateAsync(Update update, CancellationToken cancellationToken)
     {
         if (update.Message?.Text is null)
             return;
 
-        await ExecuteAndContinueAsync(update);
+        await ExecuteAndContinueAsync(update, cancellationToken);
     }
 
     /// <summary>
     /// The current step of the command for the specific chat id.
     /// </summary>
     /// <remarks>
-    /// Initially its value is 1.
+    /// Initially its value is 0.
     /// </remarks>
     protected IReadOnlyDictionary<long, CommandStep> Step => _steps.AsReadOnly();
 
@@ -48,11 +48,11 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
     /// </remarks>
     protected IReadOnlyDictionary<long, TContext> Context => _contexts.AsReadOnly();
 
-    protected abstract Task<CommandStatus> ExecuteCoreAsync(Update update);
+    protected abstract Task<CommandStatus> ExecuteCoreAsync(Update update, CancellationToken cancellationToken);
 
-    private async Task ExecuteAndContinueAsync(Update update)
+    private async Task ExecuteAndContinueAsync(Update update, CancellationToken cancellationToken)
     {
-        var status = await ExecuteCoreAsync(update);
+        var status = await ExecuteCoreAsync(update, cancellationToken);
         var chatId = update.Message!.Chat.Id;
 
         if (status == CommandStatus.Repeat)
@@ -75,11 +75,13 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
 
     protected sealed class CommandStep
     {
-        public int Value { get; private set; } = 1;
+        public int Value { get; private set; }
 
         public void Advance() => Value++;
 
-        public bool IsInitial() => Value == 1;
+        public CommandStep Before() => new() { Value = Value - 1 };
+
+        public bool IsInitial() => Value == 0;
 
         public bool IsAt(int step) => Value == step;
 
@@ -104,6 +106,8 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
         public static bool operator <=(CommandStep left, int right) => left.Value <= right;
 
         public static bool operator >=(CommandStep left, int right) => left.Value >= right;
+        
+        public static implicit operator int(CommandStep step) => step.Value;
 
         #endregion
     }

@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Svintus.MovieNightMakerBot.Core\Svintus.MovieNightMakerBot.Core.csproj"/>
+        <ProjectReference Include="..\Svintus.MovieNightMakerBot.Integrations\Svintus.MovieNightMakerBot.Integrations.csproj" />
     </ItemGroup>
 
 </Project>

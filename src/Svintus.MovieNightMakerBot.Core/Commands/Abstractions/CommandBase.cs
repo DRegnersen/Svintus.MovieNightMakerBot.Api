@@ -8,7 +8,7 @@ public abstract class CommandBase : ICommand
 
     public string? CommandDescription => GetCommandDescription();
 
-    public abstract Task ExecuteAsync(Update update);
+    public abstract Task ExecuteAsync(Update update, CancellationToken cancellationToken);
 
     private string? GetCommandName()
     {

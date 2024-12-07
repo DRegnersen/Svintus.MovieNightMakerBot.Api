@@ -8,6 +8,6 @@ internal sealed class BotEndpoint(ICommandMediator commandMediator): IBotEndpoin
 {
     public async ValueTask InvokeAsync(Update update, CancellationToken cancellationToken)
     {
-        await commandMediator.HandleUpdateAsync(update);
+        await commandMediator.HandleUpdateAsync(update, cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Svintus.MovieNightMakerBot.Core.BotSetup.Models;
+﻿namespace Svintus.MovieNightMakerBot.Core.BotSetup.Models.Options;
 
 internal sealed class BotSetupOptions
 {

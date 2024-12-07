@@ -9,9 +9,9 @@ namespace Svintus.MovieNightMakerBot.Application.Commands;
 [CommandDescription("About this bot")]
 internal sealed class StartCommand(ITelegramBotClient client) : CommandBase
 {
-    public override async Task ExecuteAsync(Update update)
+    public override async Task ExecuteAsync(Update update, CancellationToken ct)
     {
         var chatId = update.Message!.Chat.Id;
-        await client.SendMessage(chatId, "Welcome to Svintus.MovieNightMakerBot!");
+        await client.SendMessage(chatId, "Welcome to Movie Night Maker Bot", cancellationToken: ct);
     }
 }

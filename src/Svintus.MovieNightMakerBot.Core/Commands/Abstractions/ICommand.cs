@@ -8,5 +8,5 @@ public interface ICommand
     
     string? CommandDescription { get; }
     
-    Task ExecuteAsync(Update update);
+    Task ExecuteAsync(Update update, CancellationToken cancellationToken = default);
 }
