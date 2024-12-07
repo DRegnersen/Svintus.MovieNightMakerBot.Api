@@ -1,5 +1,5 @@
 ﻿using Svintus.MovieNightMakerBot.Api.Endpoints;
-using Svintus.MovieNightMakerBot.Application.Extensions;
+using Svintus.MovieNightMakerBot.Application;
 
 namespace Svintus.MovieNightMakerBot.Api.Extensions;
 

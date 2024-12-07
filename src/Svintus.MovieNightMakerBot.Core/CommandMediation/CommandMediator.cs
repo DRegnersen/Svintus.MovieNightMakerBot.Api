@@ -7,7 +7,7 @@ namespace Svintus.MovieNightMakerBot.Core.CommandMediation;
 
 internal sealed class CommandMediator(IEnumerable<ICommand> commands, IUpdateDistributor distributor) : ICommandMediator
 {
-    public async Task HandleUpdateAsync(Update update)
+    public async Task HandleUpdateAsync(Update update, CancellationToken cancellationToken)
     {
         if (update.Message is null)
             return;
@@ -15,7 +15,7 @@ internal sealed class CommandMediator(IEnumerable<ICommand> commands, IUpdateDis
         var chatId = update.Message.Chat.Id;
         if (distributor.TryGetListener(chatId, out var listener))
         {
-            await listener.HandleUpdateAsync(update);
+            await listener.HandleUpdateAsync(update, cancellationToken);
             return;
         }
         
@@ -25,7 +25,7 @@ internal sealed class CommandMediator(IEnumerable<ICommand> commands, IUpdateDis
         var command = commands.FirstOrDefault(c => c.CommandName == update.Message.Text);
         if (command is not null)
         {
-            await command.ExecuteAsync(update);
+            await command.ExecuteAsync(update, cancellationToken);
         }
     }
 }

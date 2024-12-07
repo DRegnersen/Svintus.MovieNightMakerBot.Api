@@ -11,14 +11,14 @@ namespace Svintus.MovieNightMakerBot.Application.Commands;
 [CommandDescription("Rate some movies")]
 internal sealed class RateCommand(ITelegramBotClient client, IUpdateDistributor distributor) : ComplexCommandBase<RateContext>(distributor)
 {
-    protected override async Task<CommandStatus> ExecuteCoreAsync(Update update)
+    protected override async Task<CommandStatus> ExecuteCoreAsync(Update update, CancellationToken ct)
     {
         var chatId = update.Message!.Chat.Id;
         
         if (Step[chatId].IsInitial())
         {
             Context[chatId].CurrentMovie = MovieSelector.Random();
-            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentMovie}'?");
+            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentMovie}'?", cancellationToken: ct);
             
             return CommandStatus.Continue;
         }
@@ -33,7 +33,7 @@ internal sealed class RateCommand(ITelegramBotClient client, IUpdateDistributor 
             }
             
             Context[chatId].CurrentMovie = MovieSelector.Random();
-            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentMovie}'?");
+            await client.SendMessage(chatId, $"How do you rate '{Context[chatId].CurrentMovie}'?", cancellationToken: ct);
             
             return CommandStatus.Continue;
         }
@@ -46,7 +46,7 @@ internal sealed class RateCommand(ITelegramBotClient client, IUpdateDistributor 
                 Context[chatId].BestMovie = Context[chatId].CurrentMovie;
             }
             
-            await client.SendMessage(chatId, $"Best rated movie is '{Context[chatId].BestMovie}'");
+            await client.SendMessage(chatId, $"Best rated movie is '{Context[chatId].BestMovie}'", cancellationToken: ct);
         }
 
         return CommandStatus.Stop;

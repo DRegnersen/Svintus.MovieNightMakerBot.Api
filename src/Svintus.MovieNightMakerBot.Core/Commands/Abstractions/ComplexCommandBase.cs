@@ -12,7 +12,7 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
     private readonly Dictionary<long, CommandStep> _steps = new();
     private readonly Dictionary<long, TContext> _contexts = new();
 
-    public override async Task ExecuteAsync(Update update)
+    public override async Task ExecuteAsync(Update update, CancellationToken cancellationToken)
     {
         var chatId = update.Message!.Chat.Id;
 
@@ -21,15 +21,15 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
 
         distributor.RegisterListener(chatId, distributeTo: this);
 
-        await ExecuteAndContinueAsync(update);
+        await ExecuteAndContinueAsync(update, cancellationToken);
     }
 
-    public async Task HandleUpdateAsync(Update update)
+    public async Task HandleUpdateAsync(Update update, CancellationToken cancellationToken)
     {
         if (update.Message?.Text is null)
             return;
 
-        await ExecuteAndContinueAsync(update);
+        await ExecuteAndContinueAsync(update, cancellationToken);
     }
 
     /// <summary>
@@ -48,11 +48,11 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
     /// </remarks>
     protected IReadOnlyDictionary<long, TContext> Context => _contexts.AsReadOnly();
 
-    protected abstract Task<CommandStatus> ExecuteCoreAsync(Update update);
+    protected abstract Task<CommandStatus> ExecuteCoreAsync(Update update, CancellationToken cancellationToken);
 
-    private async Task ExecuteAndContinueAsync(Update update)
+    private async Task ExecuteAndContinueAsync(Update update, CancellationToken cancellationToken)
     {
-        var status = await ExecuteCoreAsync(update);
+        var status = await ExecuteCoreAsync(update, cancellationToken);
         var chatId = update.Message!.Chat.Id;
 
         if (status == CommandStatus.Repeat)

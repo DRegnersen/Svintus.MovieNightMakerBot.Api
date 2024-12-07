@@ -4,7 +4,7 @@ using Svintus.MovieNightMakerBot.Application.Commands;
 using Svintus.MovieNightMakerBot.Core.Commands.Abstractions;
 using Svintus.MovieNightMakerBot.Core.DependencyInjection;
 
-namespace Svintus.MovieNightMakerBot.Application.Extensions;
+namespace Svintus.MovieNightMakerBot.Application;
 
 public static class ServiceCollectionExtensions
 {

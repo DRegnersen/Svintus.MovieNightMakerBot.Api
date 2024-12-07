@@ -4,5 +4,5 @@ namespace Svintus.MovieNightMakerBot.Core.UpdateDistribution.Abstractions;
 
 public interface IUpdateListener
 {
-    Task HandleUpdateAsync(Update update);
+    Task HandleUpdateAsync(Update update, CancellationToken cancellationToken = default);
 }

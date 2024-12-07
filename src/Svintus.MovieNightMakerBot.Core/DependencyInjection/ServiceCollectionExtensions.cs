@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
         var botOptions = configuration.GetSection("Services:TelegramBotClient").Get<TelegramBotClientOptions>()!;
 
         services
-            .AddSingleton<ITelegramBotClient, TelegramBotClient>(_ => new TelegramBotClient(botOptions))
+            .AddSingleton<ITelegramBotClient>(new TelegramBotClient(botOptions))
             .Configure<BotSetupOptions>(configuration.GetSection("Services:TelegramBotClient"));
         
         return services;
