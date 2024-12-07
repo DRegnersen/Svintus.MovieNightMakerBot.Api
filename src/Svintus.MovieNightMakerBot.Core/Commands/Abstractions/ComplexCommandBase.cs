@@ -36,7 +36,7 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
     /// The current step of the command for the specific chat id.
     /// </summary>
     /// <remarks>
-    /// Initially its value is 1.
+    /// Initially its value is 0.
     /// </remarks>
     protected IReadOnlyDictionary<long, CommandStep> Step => _steps.AsReadOnly();
 
@@ -75,11 +75,13 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
 
     protected sealed class CommandStep
     {
-        public int Value { get; private set; } = 1;
+        public int Value { get; private set; }
 
         public void Advance() => Value++;
 
-        public bool IsInitial() => Value == 1;
+        public CommandStep Before() => new() { Value = Value - 1 };
+
+        public bool IsInitial() => Value == 0;
 
         public bool IsAt(int step) => Value == step;
 
@@ -104,6 +106,8 @@ public abstract class ComplexCommandBase<TContext>(IUpdateDistributor distributo
         public static bool operator <=(CommandStep left, int right) => left.Value <= right;
 
         public static bool operator >=(CommandStep left, int right) => left.Value >= right;
+        
+        public static implicit operator int(CommandStep step) => step.Value;
 
         #endregion
     }
